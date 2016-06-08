@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<script type="text/javascript" src="thrift/thrift.js">
+</script>
+
+<script type="text/javascript" src="thrift/knock-thrift.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/types_types.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/exceptions_types.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/TotalkService_types.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/TotalkService.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/ClientService_types.js">
+</script>
+
+<script type="text/javascript" src="thrift/services/ClientService.js">
+</script>
+
+<head>
+    <title></title>
+</head>
+<body>
+
+    <script type="text/javascript">
+
+        var wsUrl = "ws://localhost:11000/thrift_js?userId=123&deviceId=1";
+        var xhrUrl = "http://localhost:11000/TJSON?userId=123&deviceId=1";
+        var transport_ = new knock.thrift.TKnockTransport(wsUrl, xhrUrl);
+        transport_.open();
+
+        //Получение totalkService
+        var totalkService = new totalk.thrift.TotalkServiceClient(new Thrift.Protocol(transport_));
+
+        //Подписка на ClientService.onPing
+        Thrift.AsyncManager.getInstance().addClientCallback('ClientService:onPing', function(arg){
+            log("onPing: " + arg);
+            return true;
+        });
+
+        window.sendPing = function(){
+            totalkService.ping("hi");
+        }
+
+        window.addReview = function(){
+            var review = new totalk.thrift.Review();
+            review.title = "Title123";
+
+            totalkService.addReview(review, function(r){
+
+                log("added review:" + JSON.stringify(r));
+            })
+
+            totalkService.getByEntity()
+        }
+
+        window.hello = function(){
+            totalkService.hello("world", function(r){
+                log("Answer: " + r);
+            })
+        }
+
+        window.log = function(arg){
+            var div = document.createElement("div");
+            div.appendChild(document.createTextNode(arg));
+            document.getElementById("log").appendChild(div);
+            return true;
+        }
+
+    </script>
+
+
+    <button onclick="window.sendPing()">call ping()</button>
+
+    <button onclick="window.hello()">call hello()</button>
+
+    <button onclick="window.addReview()">add addReview()</button>
+
+    <div id="log"></div>
+
+</body>
+</html>

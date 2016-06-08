@@ -1,0 +1,53 @@
+<project default="build-all" name="main">
+
+
+	<import file="target/thrift/thrift.xml"/>
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${maven.plugin.classpath}" />	
+	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpath="${maven.plugin.classpath}"/>
+
+	<property environment="env" />
+
+	<target name="clean">
+		<echo message="Cleaning previous generated files..."/>
+		<delete includeemptydirs="true" failonerror="false" >
+			<fileset dir="src/main/gen-java" includes="**/*"/>
+			<fileset dir="src/main/gen-javabean" includes="**/*"/>
+			<fileset dir="src/main/gen-php" includes="**/*"/>
+		</delete>
+		<delete file="cache.properties" />
+	</target>
+	
+	<target name="build-all">
+
+		<antcall target="setloglevel">
+			<param name="loglevel" value="${loglevel}"/>
+		</antcall>
+
+		<echo message="Compiling thrift files..."/>
+				
+		<foreach target="build-one-cocoa" param="file" >
+			<path>
+				<fileset dir="src/main">
+					<include name="thrift/TotalkService.thrift"/>
+					<include name="thrift/ClientService.thrift"/>
+					<include name="thrift/types/exceptions.thrift"/>
+					<include name="thrift/types/types.thrift"/>
+					<modified />
+				</fileset>
+			</path>
+		</foreach>
+
+		<foreach target="build-one" param="file" >
+			<path>
+				<fileset dir="src/main">
+					<include name="thrift/*.thrift"/>
+					<include name="thrift/types/*.thrift"/>
+					<modified />
+				</fileset>
+			</path>
+		</foreach>
+
+	</target>
+
+</project>
