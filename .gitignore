@@ -3,3 +3,10 @@ target
 .classpath
 .project
 .settings
+apps
+libs
+gen-cocoa
+gen-javabean
+gen-js
+gen-php
+cache.properties
