@@ -26,14 +26,5 @@
     <tx:annotation-driven mode="aspectj" proxy-target-class="true"/>     
     
     <context:property-placeholder  />    
-  	   
-	<bean id="cluster" class="com.knockchat.cassandra.CassandraSessionFactoryBean" factory-method="createCluster" destroy-method="close">
-		<constructor-arg><value>${cassandra.host}</value></constructor-arg>
-	</bean>
-
-	<bean id="session" class="com.knockchat.cassandra.CassandraSessionFactoryBean" factory-method="createSession" destroy-method="close">
-		<constructor-arg ref="cluster"></constructor-arg>
-		<constructor-arg><value>${cassandra.ks}</value></constructor-arg>
-	</bean>
-  	   
+  	     	   
 </beans>

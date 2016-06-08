@@ -9,4 +9,6 @@ gen-cocoa
 gen-javabean
 gen-js
 gen-php
+gen-perl
 cache.properties
+test-output

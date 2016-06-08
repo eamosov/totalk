@@ -23,10 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.datastax.driver.core.Session;
-import com.datastax.driver.mapping.MappingManager;
 import com.knockchat.appserver.AppserverApplication;
-import com.knockchat.cassandra.DbMetadataParser;
 import com.knockchat.sql.migration.logging.ColorOffConverter;
 import com.knockchat.sql.migration.logging.ColorOnConverter;
 
@@ -52,13 +49,6 @@ public class TotalkApplication {
     }
 
     private static final Logger log = LoggerFactory.getLogger(TotalkApplication.class);
-
-         
-    @Bean
-    public MappingManager mappingManager(Session session){
-		final MappingManager mm = new MappingManager(session, DbMetadataParser.INSTANCE);
-    	return mm;
-    }
         
     @Bean
     public CacheManager ehCache(ApplicationContext context) throws IOException{

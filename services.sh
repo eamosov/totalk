@@ -190,9 +190,9 @@ if [ ! -f ${RUNTIME_DIR}/totalk-local.properties ];then
 	ln -s ../../totalk/totalk-local.properties ${RUNTIME_DIR}/totalk-local.properties
 fi
 
-if [ ! -f ${RUNTIME_DIR}/es.properties ];then
-	ln -s ../../totalk/es.properties ${RUNTIME_DIR}/es.properties
-fi
+#if [ ! -f ${RUNTIME_DIR}/es.properties ];then
+#	ln -s ../../totalk/es.properties ${RUNTIME_DIR}/es.properties
+#fi
 
 if [ ! -f ${RUNTIME_DIR}/logback-test.xml ];then
 	ln -s ../../totalk/logback-test.xml ${RUNTIME_DIR}/logback-test.xml
