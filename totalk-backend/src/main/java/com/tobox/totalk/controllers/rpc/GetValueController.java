@@ -1,8 +1,13 @@
 package com.tobox.totalk.controllers.rpc;
 
+import java.util.concurrent.Callable;
+
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.knockchat.appserver.controller.ThriftController;
 import com.knockchat.appserver.jgroups.RpcJGroups;
 import com.knockchat.appserver.jms.RpcJms;
@@ -16,11 +21,28 @@ public class GetValueController extends ThriftController<RpcService.getValue_arg
 
 	@Autowired
 	private ValueService valueService;
+	
+	@Qualifier("listeningCallerRunsBoundQueueExecutor")
+	@Autowired
+	private  ListeningExecutorService executor;
 
 	@Override
 	protected String handle() throws TException {
-		final String v = valueService.get(args.getKey());
-		return v == null ? "" : v;
+		
+		//Контроллер может быть асинхронным!
+		
+		final ListenableFuture<String> f = 
+				executor.submit(new Callable<String>(){
+					@Override
+					public String call() throws Exception {
+						final String v = valueService.get(args.getKey());
+						return v == (String)null ? "" : v;			
+					}
+				});
+		
+		
+		//Выход из контроллера без блокировки!
+		return waitForAnswer(f);		
 	}
 
 	@Override
