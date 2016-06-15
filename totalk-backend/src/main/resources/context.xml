@@ -26,5 +26,7 @@
     <tx:annotation-driven mode="aspectj" proxy-target-class="true"/>     
     
     <context:property-placeholder  />    
+    
+    <bean id="advDAO" class="com.tobox.services.dao.AdvDAO" />
   	     	   
 </beans>

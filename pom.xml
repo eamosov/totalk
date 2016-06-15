@@ -9,9 +9,9 @@
 	<version>0.0.1</version>
 
 	<parent>
-		<groupId>com.knockchat</groupId>
-		<artifactId>knock4j-parent</artifactId>
-		<version>0.0.1</version>
+		<groupId>everthrift</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 
@@ -203,6 +203,18 @@
 		<repository>
 			<id>efreet-thrift-repo</id>
 			<url>https://eamosov.github.io/thrift/</url>
+		</repository>
+
+		<repository>
+			<id>efreet-everthrift-repo</id>
+			<url>https://eamosov.github.io/everthrift/</url>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+
+			<releases>
+				<updatePolicy>always</updatePolicy>
+			</releases>
 		</repository>
 
 	</repositories>

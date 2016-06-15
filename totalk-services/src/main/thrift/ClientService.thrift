@@ -7,5 +7,4 @@ include "types/exceptions.thrift"
 
 service ClientService {
 
-	bool onPing(1:string arg);
 }

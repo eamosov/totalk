@@ -19,14 +19,24 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.knockchat</groupId>
-			<artifactId>knock4j-appserver</artifactId>
+			<groupId>everthrift</groupId>
+			<artifactId>appserver</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.knockchat</groupId>
-			<artifactId>knock4j-appserver-jetty</artifactId>
+			<groupId>everthrift</groupId>
+			<artifactId>jetty</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>everthrift</groupId>
+			<artifactId>rabbit</artifactId>
+		</dependency>		
+
+		<dependency>
+			<groupId>everthrift</groupId>
+			<artifactId>cassandra</artifactId>
+		</dependency>		
 
 		<dependency>
 			<groupId>com.tobox</groupId>
@@ -48,21 +58,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-pool</artifactId>
 		</dependency>
 
 		<dependency>
@@ -115,6 +110,46 @@
             <scope>test</scope>
         </dependency>
 		
+		<dependency>
+			<groupId>com.tobox</groupId>
+			<artifactId>session</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			
+			<exclusions>
+				<exclusion>
+					<groupId>com.datastax.cassandra</groupId>
+					<artifactId>cassandra-driver-core</artifactId>				
+				</exclusion>
+			</exclusions>		
+			
+		</dependency>
+
+		<dependency>
+			<groupId>com.tobox</groupId>
+			<artifactId>entity-cassandra</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.datastax.cassandra</groupId>
+					<artifactId>cassandra-driver-core</artifactId>				
+				</exclusion>
+			</exclusions>		
+		</dependency>
+
+		<dependency>
+			<groupId>com.tobox</groupId>
+			<artifactId>auth</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		
 	</dependencies>
 
 	<build>
@@ -134,37 +169,6 @@
 		</resources>
 
 		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.8</version>
-
-				<executions>
-
-					<execution>
-						<id>migrator</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.knockchat</groupId>
-									<artifactId>knock4j-migrator</artifactId>
-									<version>${knock4j-migrator.version}</version>
-									<classifier>with-deps</classifier>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${basedir}/../apps</outputDirectory>
-						</configuration>
-					</execution>
-
-
-				</executions>
-			</plugin>
-
 
 			<plugin>
 				<groupId>com.knockchat</groupId>
@@ -224,8 +228,8 @@
 							<artifactId>spring-aspects</artifactId>
 						</aspectLibrary>
 						<aspectLibrary>
-							<groupId>com.knockchat</groupId>
-							<artifactId>knock4j-thrift</artifactId>
+							<groupId>everthrift</groupId>
+							<artifactId>thrift</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>
 				</configuration>
@@ -238,6 +242,18 @@
 				<configuration>
 					<outputDirectory>${basedir}/../apps</outputDirectory>
 				</configuration>
+			</plugin>
+						
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4.1</version>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
 			</plugin>
 			
 		</plugins>

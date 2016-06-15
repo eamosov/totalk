@@ -12,3 +12,6 @@ gen-php
 gen-perl
 cache.properties
 test-output
+totalk-android
+totalk-ios
+totalk-web

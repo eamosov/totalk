@@ -41,9 +41,9 @@
 								</artifactItem>
 
 								<artifactItem>
-									<groupId>com.knockchat</groupId>
-									<artifactId>knock4j-services</artifactId>
-									<version>${knock4j-services.version}</version>
+									<groupId>everthrift</groupId>
+									<artifactId>services</artifactId>
+									<version>${everthrift.version}</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>${project.build.directory}/thrift</outputDirectory>
@@ -52,7 +52,7 @@
 					</execution>
 
 					<execution>
-						<id>knock4j-services-php</id>
+						<id>everthrift-services-php</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>copy</goal>
@@ -60,9 +60,9 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>com.knockchat</groupId>
-									<artifactId>knock4j-services</artifactId>
-									<version>${knock4j-services.version}</version>
+									<groupId>everthrift</groupId>
+									<artifactId>services</artifactId>
+									<version>${everthrift.version}</version>
 									<type>zip</type>
 									<classifier>gen-php</classifier>
 								</artifactItem>

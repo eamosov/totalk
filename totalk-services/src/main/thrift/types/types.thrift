@@ -47,8 +47,7 @@ struct Review {
 	14:string body
 	//15:list<string> photos	??
 	
-	16:i32 _votesYes				//Полезно ДА  DEPRICATED
-	21:i64 votesYes				//Полезно ДА
+	16:i32 votesYes				//Полезно ДА
 	17:i32 votesNo				//Полезно НЕТ
 	
 	18:list<Comment> comments	//Первая страница комментариев

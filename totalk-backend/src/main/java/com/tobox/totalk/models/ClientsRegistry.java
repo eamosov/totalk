@@ -6,6 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.thrift.TException;
+import org.everthrift.appserver.utils.Pair;
+import org.everthrift.appserver.utils.thrift.ThriftClient;
+import org.everthrift.clustering.jgroups.ClusterThriftClientIF;
+import org.everthrift.clustering.jgroups.ClusterThriftClientIF.Options;
+import org.everthrift.clustering.jgroups.ClusterThriftClientIF.Reply;
+import org.everthrift.clustering.thrift.InvocationInfo;
+import org.everthrift.clustering.thrift.InvocationInfoThreadHolder;
+import org.everthrift.clustering.thrift.ThriftProxyFactory;
 import org.jgroups.Address;
 import org.jgroups.blocks.ResponseMode;
 import org.slf4j.Logger;
@@ -21,14 +29,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.knockchat.clustering.jgroups.ClusterThriftClientIF;
-import com.knockchat.clustering.jgroups.ClusterThriftClientIF.Options;
-import com.knockchat.clustering.jgroups.ClusterThriftClientIF.Reply;
-import com.knockchat.clustering.thrift.InvocationInfo;
-import com.knockchat.clustering.thrift.InvocationInfoThreadHolder;
-import com.knockchat.clustering.thrift.ThriftProxyFactory;
-import com.knockchat.utils.Pair;
-import com.knockchat.utils.thrift.ThriftClient;
 import com.tobox.totalk.thrift.ClientService;
 import com.tobox.totalk.utils.BiMultimap;
 
@@ -87,7 +87,7 @@ public class ClientsRegistry {
 		
 		for (final ThriftClient c : clients){
 			
-			final Session session = (Session)c.getSession();
+			final TotalkSession session = (TotalkSession)c.getSession();
 			
 			if (session == null){
 				log.error("No session for sessionId: {}", c.getSessionId());
@@ -145,9 +145,9 @@ public class ClientsRegistry {
 			}});				
 	}
 		
-	public void onAuth(Session ses, final ThriftClient thriftClient){
+	public void onAuth(TotalkSession ses, final ThriftClient thriftClient){
 		
-		Session old = (Session)thriftClient.getSession();
+		TotalkSession old = (TotalkSession)thriftClient.getSession();
 		
 		if (old == null || !Objects.equals(old.getUserId(), ses.getUserId()) || !Objects.equals(old.getDeviceId(), ses.getDeviceId()))		
 			thriftClient.setSession(ses);
@@ -175,9 +175,9 @@ public class ClientsRegistry {
 	 * @param thriftClient
 	 * @return old Session object
 	 */
-	public Session onLogout(final ThriftClient thriftClient){
+	public TotalkSession onLogout(final ThriftClient thriftClient){
         removeClient(thriftClient);
-        final Session s = (Session)thriftClient.getSession();        
+        final TotalkSession s = (TotalkSession)thriftClient.getSession();        
         thriftClient.setSession(null);
 		return s;
 	}
