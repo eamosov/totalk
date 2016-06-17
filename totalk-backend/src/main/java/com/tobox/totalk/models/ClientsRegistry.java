@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.thrift.TException;
-import org.everthrift.appserver.utils.Pair;
 import org.everthrift.appserver.utils.thrift.ThriftClient;
 import org.everthrift.clustering.jgroups.ClusterThriftClientIF;
 import org.everthrift.clustering.jgroups.ClusterThriftClientIF.Options;
@@ -14,6 +13,7 @@ import org.everthrift.clustering.jgroups.ClusterThriftClientIF.Reply;
 import org.everthrift.clustering.thrift.InvocationInfo;
 import org.everthrift.clustering.thrift.InvocationInfoThreadHolder;
 import org.everthrift.clustering.thrift.ThriftProxyFactory;
+import org.everthrift.utils.Pair;
 import org.jgroups.Address;
 import org.jgroups.blocks.ResponseMode;
 import org.slf4j.Logger;

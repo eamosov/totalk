@@ -1,7 +1,7 @@
 package com.tobox.totalk.models;
 
 import org.elasticsearch.action.search.SearchType;
-import org.everthrift.appserver.utils.LongTimestamp;
+import org.everthrift.utils.LongTimestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.tobox.totalk.models;
 
 import org.apache.thrift.TBase;
-import org.everthrift.appserver.utils.GsonSerializer.TBaseSerializer;
+import org.everthrift.appserver.utils.thrift.GsonSerializer.TBaseSerializer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

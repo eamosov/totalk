@@ -14,6 +14,15 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.tobox</groupId>
+				<artifactId>totalk-config</artifactId>
+				<version>0.0.1</version>							
+			</dependency>		
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -164,8 +173,10 @@
 	</build>
 
 	<modules>
+		<module>totalk-config</module>
 		<module>totalk-services</module>
 		<module>totalk-backend</module>
+		<module>totalk-migrations</module>
 	</modules>
 
 	<profiles>

@@ -20,6 +20,12 @@
 	<artifactId>totalk-backend</artifactId>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>com.tobox</groupId>
+			<artifactId>totalk-config</artifactId>
+		</dependency>
+	
 		<dependency>
 			<groupId>everthrift</groupId>
 			<artifactId>appserver</artifactId>

@@ -7,7 +7,7 @@
          overflowToDisk="false"
          timeToLiveSeconds="3600"
          memoryStoreEvictionPolicy="LRU"
-         maxBytesLocalHeap="${ehcache.maxBytesLocalHeap}"
+         maxBytesLocalHeap="${ehcache.maxBytesLocalHeap:128Mb}"
          >
 
 	<cacheManagerPeerProviderFactory

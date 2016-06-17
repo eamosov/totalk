@@ -16,8 +16,8 @@ import org.everthrift.cassandra.codecs.ByteArrayBlobCodec;
 import org.everthrift.cassandra.codecs.LongTimestampCodec;
 import org.everthrift.cassandra.codecs.StringUuidCodec;
 import org.everthrift.cassandra.com.datastax.driver.mapping.MappingManager;
-import org.everthrift.sql.migration.logging.ColorOffConverter;
-import org.everthrift.sql.migration.logging.ColorOnConverter;
+import org.everthrift.utils.logging.ColorOffConverter;
+import org.everthrift.utils.logging.ColorOnConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +92,7 @@ public class TotalkApplication {
      * @param args
      * @throws Exception
      */
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {    	    	
 
 		//Хак, разрешающий конфликт elasticsearch с bigmemory-go
 		final ClassLoader cl = new ClassLoader(Thread.currentThread().getContextClassLoader()){

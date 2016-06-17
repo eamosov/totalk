@@ -15,11 +15,8 @@ NODE="totalk-backend"
 VERSION=0.0.1
 MAIN="com.tobox.totalk.TotalkApplication"
 
-CLUSTER_NAME="cluster_$$"
-MCAST_PORT=45588
 XMS=200m
 XMX=500m
-BIGMEMORY=100m
 
 if [ -f $DIR/services.local.sh ]; then
 	source $DIR/services.local.sh
@@ -50,21 +47,9 @@ do
 					;;
 			esac	
 			;;
-		-m)
-			shift
-			BIGMEMORY=$1
-			;;
 		-i)
 			shift
 			NODE_INDEX=$1
-			;;
-		-l)
-			shift
-			CLUSTER_NAME=$1
-			;;
-		-h)
-			shift
-			BIND_HOST=$1
 			;;
 		-x)
 			shift
@@ -100,6 +85,7 @@ NODE="${NODE}-${NODE_INDEX}"
 if [ "$COPY_CP" = "1" ]; then
 	CP_ROOT="${RUNTIME_DIR}/classes-${NODE}"
 else
+	RUNTIME_DIR=$DIR
 	CP_ROOT=$DIR/libs
 fi;
 
@@ -155,10 +141,10 @@ if [ $COPY_CP = 1 ]; then
 
 else
 	for a in ${CPTXT//:/ } ; do
-		CP="$CP:../../java/$a"
+		CP="$CP:$DIR/$a"
 	done
 
-	CP="$CP:../../java/apps/`basename $JAR`"
+	CP="$CP:$DIR/apps/`basename $JAR`"
 fi
 
 if [ "z$JAVA_HOME" != "z" ]; then
@@ -171,17 +157,9 @@ if [ ! -z $NODE ]; then
 fi
 
 APP_ARGS="${APP_ARGS} --jmx.serviceUrl=service:jmx:jmxmp://0.0.0.0:${JMX_PORT}/"
-APP_ARGS="${APP_ARGS} --jgroups.cluster.name=${CLUSTER_NAME}"
 APP_ARGS="${APP_ARGS} --thrift.port=${THRIFT_SYNC_TCP}  --thrift.async.port=${THRIFT_ASYNC_TCP}"
 APP_ARGS="${APP_ARGS} --jetty.port=${HTTP_PORT} --jetty.ssl.port=${SSL_PORT}"
-#APP_ARGS="${APP_ARGS} --nosms"
 
-if [ ! -z $BIND_HOST ]; then
-    APP_ARGS="${APP_ARGS} --jetty.host=${BIND_HOST}"
-fi
-
-JAVA_OPTS="${JAVA_OPTS} -Dehcache.maxBytesLocalHeap=${BIGMEMORY}"
-JAVA_OPTS="${JAVA_OPTS} -Djgroups.udp.mcast_port=${MCAST_PORT} -Dehcache.jgroups.udp.mcast_port=$((MCAST_PORT + 1))"
 JAVA_OPTS="${JAVA_OPTS} -Xdebug -Xrunjdwp:transport=dt_socket,address=${JDEBUG_PORT},server=y,suspend=n"
 JAVA_OPTS="${JAVA_OPTS} -Djava.library.path=/usr/local/lib"
 JAVA_OPTS="${JAVA_OPTS} -javaagent:$CP_ROOT/jetty-alpn-agent-2.0.0.jar"
@@ -190,9 +168,9 @@ if [ ! -f ${RUNTIME_DIR}/totalk-local.properties ];then
 	ln -s ../../totalk/totalk-local.properties ${RUNTIME_DIR}/totalk-local.properties
 fi
 
-#if [ ! -f ${RUNTIME_DIR}/es.properties ];then
-#	ln -s ../../totalk/es.properties ${RUNTIME_DIR}/es.properties
-#fi
+if [ ! -f ${RUNTIME_DIR}/es.properties ];then
+	ln -s ../../totalk/es.properties ${RUNTIME_DIR}/es.properties
+fi
 
 if [ ! -f ${RUNTIME_DIR}/logback-test.xml ];then
 	ln -s ../../totalk/logback-test.xml ${RUNTIME_DIR}/logback-test.xml
