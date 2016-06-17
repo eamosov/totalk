@@ -1,5 +1,7 @@
 package com.tobox.test.suites;
 
+import java.util.List;
+
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -22,7 +24,9 @@ import com.tobox.auth.protocol.UserIdResponse;
 import com.tobox.test.TestApplication;
 import com.tobox.totalk.thrift.TotalkService;
 import com.tobox.totalk.thrift.exceptions.WrappedException;
+import com.tobox.totalk.thrift.types.EntityType;
 import com.tobox.totalk.thrift.types.Review;
+import com.tobox.totalk.thrift.types.ReviewType;
 
 @ContextConfiguration(classes = TestApplication.class)
 public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
@@ -71,9 +75,16 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 		review.setEntityId("18fd7de2-4de8-4dbb-8eed-a03d4067a84d");
 		review.setTitle("title1");
 		review.setBody("boidy1");
+		review.setType(ReviewType.OPINION);
 		
 		review = totalkService.addReview(review);
 		log.info("review:{}", review);
+		
+		List<Review> reviews = totalkService.getByEntity(EntityType.ADV, review.getEntityId(), ReviewType.OPINION, 0, 10);
+		log.info("reviews size:{}", reviews.size());
+		log.info("getByEntity:{}", reviews);
+		
+		log.info("getReviewById:{}", totalkService.getReviewById(review.getId()));
 	}
 	
 }

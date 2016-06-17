@@ -13,6 +13,8 @@
 
 	<properties>
 		<migration.target.package>com.tobox.migration</migration.target.package>
+		<elasticsearch.version>1.7.5</elasticsearch.version>
+		<spring-elasticsearch.version>1.4.2</spring-elasticsearch.version>
 	</properties>
 
 	<artifactId>totalk-backend</artifactId>
@@ -148,7 +150,51 @@
 			<artifactId>httpcore</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>
 		
+		<dependency>
+			<groupId>fr.pilato.spring</groupId>
+			<artifactId>spring-elasticsearch</artifactId>
+			<version>${spring-elasticsearch.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${elasticsearch.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+				
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.7.1</version>
+		</dependency>
 		
 	</dependencies>
 

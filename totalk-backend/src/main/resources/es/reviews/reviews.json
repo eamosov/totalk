@@ -1,0 +1,20 @@
+{
+    "reviews" : {
+        "dynamic_templates": [
+            {
+                "default_not_analyzed": {
+                    "match" : "*",
+                    "match_mapping_type" : "string",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                    }
+                }
+            }
+        ],    
+    	"_all" : {"enabled" : false},
+        "properties" : {
+   
+        }
+    }
+}

@@ -6,8 +6,11 @@ include "types/types.thrift"
 include "types/exceptions.thrift"
 
 service TotalkService {
-		
-	types.Review getReviewById(1:string id) throws (1:exceptions.WrappedException wrappedException);
+
+	/**
+	*	Получить отзыв по id
+	*/		
+	types.Review getReviewById(1:string id) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException);
 	
 	/**
 	*	Показать ленту отзывов по дате создания
