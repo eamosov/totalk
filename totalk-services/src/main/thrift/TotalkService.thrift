@@ -10,7 +10,7 @@ service TotalkService {
 	/**
 	*	Получить отзыв по id
 	*/		
-	types.Review getReviewById(1:string id) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException);
+	types.Review getReviewById(1:string id) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException, 3:exceptions.DeletedException deletedException);
 	
 	/**
 	*	Показать ленту отзывов по дате создания
@@ -30,12 +30,12 @@ service TotalkService {
 	/**
 	*	Получить список комментариев к отзыву
 	*/
-	list<types.Comment> getComments(1:string reviewId, 2:i32 offset, 3:i32 limit) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException);
+	types.Comments getComments(1:string reviewId, 2:i32 offset, 3:i32 limit) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException);
 	
 	/**
 	*	Получить список отзывов о товаре
 	*/
-	list<types.Review> getByEntity(1:types.EntityType entityType, 2:string entityId, 3:types.ReviewType reviewType, 4:i32 offset, 5:i32 limit) throws (1:exceptions.WrappedException wrappedException);
+	types.Reviews getByEntity(1:types.EntityType entityType, 2:string entityId, 3:types.ReviewType reviewType, 4:i32 offset, 5:i32 limit) throws (1:exceptions.WrappedException wrappedException);
 	
 	/**
 	*	Отзыв полезный: ДА/НЕТ ?
@@ -45,10 +45,15 @@ service TotalkService {
 	/**
 	*	Добавить обзор
 	*/
-	types.Review addReview(1:types.Review review) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoAdvException noAdvException);
+	types.Review addReview(1:types.Review review) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoAdvException noAdvException, 3:exceptions.DeletedException deletedException);
 	
 	/**
 	*	Добавить комментарий
 	*/
-	types.Comment addComment(1:types.Comment comment) throws (1:exceptions.WrappedException wrappedException);	 
+	types.Comment addComment(1:types.Comment comment) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException, 3:exceptions.DeletedException deletedException);
+	
+	/**
+	*	Получить комментарий по его id
+	*/
+	types.Comment getCommentById(1:string id) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoCommentException noCommentException);	 
 }

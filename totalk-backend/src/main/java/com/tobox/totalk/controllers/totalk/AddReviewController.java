@@ -16,6 +16,7 @@ import com.tobox.totalk.models.review.ReviewModel;
 import com.tobox.totalk.models.review.ReviewModelFactory;
 import com.tobox.totalk.thrift.TotalkService;
 import com.tobox.totalk.thrift.TotalkService.addReview_args;
+import com.tobox.totalk.thrift.exceptions.DeletedException;
 import com.tobox.totalk.thrift.exceptions.NoAdvException;
 import com.tobox.totalk.thrift.types.Country;
 import com.tobox.totalk.thrift.types.EntityType;
@@ -50,6 +51,9 @@ public class AddReviewController extends AppThriftController<TotalkService.addRe
 		
 		if (adv == null)
 			throw new NoAdvException(_review.getEntityId());
+		
+		if (adv.isDeleted())
+			throw new DeletedException(adv.getId().toString());
 		
 		//TODO проверить свойства товара (не удален, не скрыт, ...)
 		

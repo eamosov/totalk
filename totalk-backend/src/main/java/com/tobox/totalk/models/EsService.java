@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.tobox.totalk.models.review.CommentModel;
+import com.tobox.totalk.models.review.CommentModelFactory;
 import com.tobox.totalk.models.review.ReviewModel;
 import com.tobox.totalk.models.review.ReviewModelFactory;
 import com.tobox.totalk.thrift.types.EntityType;
@@ -23,7 +25,10 @@ public class EsService extends BasicEsService{
 	
 	@Autowired
 	private ReviewModelFactory reviewModelFactory;
-       
+
+	@Autowired
+	private CommentModelFactory commentModelFactory;
+
 	public EsService() {
 		
 	}
@@ -34,6 +39,10 @@ public class EsService extends BasicEsService{
 
 	public ListenableFuture<ESearchResult<ReviewModel>> findReviewsByEntity(String entityId, EntityType entityType, ReviewType type, int limit, int offset){		
 		return searchQueryAsync(reviewModelFactory, SearchType.DFS_QUERY_THEN_FETCH, false, null, jsQueryBuilder.getQuery("findReviewsByEntity", entityId, entityType.name(), type.name(), limit, offset), false);
+	}
+
+	public ListenableFuture<ESearchResult<CommentModel>> findCommentsByReview(String reviewId, int limit, int offset){		
+		return searchQueryAsync(commentModelFactory, SearchType.DFS_QUERY_THEN_FETCH, false, null, jsQueryBuilder.getQuery("findCommentsByReview", reviewId, limit, offset), false);
 	}
 
 }

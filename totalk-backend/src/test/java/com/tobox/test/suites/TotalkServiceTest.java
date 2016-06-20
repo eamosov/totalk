@@ -1,6 +1,6 @@
 package com.tobox.test.suites;
 
-import java.util.List;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -8,6 +8,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.transport.THttpClient;
+import org.hamcrest.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,20 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.google.common.collect.Collections2;
 import com.tobox.auth.protocol.UserDataRequest;
 import com.tobox.auth.protocol.UserIdResponse;
 import com.tobox.test.TestApplication;
 import com.tobox.totalk.thrift.TotalkService;
+import com.tobox.totalk.thrift.exceptions.DeletedException;
+import com.tobox.totalk.thrift.exceptions.NoAdvException;
 import com.tobox.totalk.thrift.exceptions.WrappedException;
+import com.tobox.totalk.thrift.types.Comment;
+import com.tobox.totalk.thrift.types.Comments;
 import com.tobox.totalk.thrift.types.EntityType;
 import com.tobox.totalk.thrift.types.Review;
 import com.tobox.totalk.thrift.types.ReviewType;
+import com.tobox.totalk.thrift.types.Reviews;
 
 @ContextConfiguration(classes = TestApplication.class)
 public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
@@ -42,6 +49,9 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 	
 	private String backendHost = "localhost";
 	private int backendPort = 8080;
+	private String testAdvId = "18fd7de2-4de8-4dbb-8eed-a03d4067a84d";
+	
+	private UserIdResponse user;
 	
 	@BeforeClass
 	public void beforeSuite() throws Exception{
@@ -52,6 +62,11 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 		
 		final THttpClient tr = new THttpClient("http://localhost:11000/TBINARY", httpClient);
 		totalkService = new TotalkService.Client(new TBinaryProtocol(tr));
+		
+		
+		final ResponseEntity<UserIdResponse> r = restTemplate.postForEntity(path("/api/beta/auth/anonymous"), new UserDataRequest(), UserIdResponse.class);
+		user = r.getBody();
+		log.info("authAnonymous: {}", user.getId());
 	}
 	
 	@AfterClass(alwaysRun = true)
@@ -65,26 +80,61 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 	}
 	
 	@Test
-	public void authAnonymous() throws WrappedException, TException{
+	public void testAddReview() throws WrappedException, TException, InterruptedException{
 		
-		final ResponseEntity<UserIdResponse> r = restTemplate.postForEntity(path("/api/beta/auth/anonymous"), new UserDataRequest(), UserIdResponse.class);
-		final UserIdResponse resp = r.getBody();
-		log.info("authAnonymous: {}", resp.getId());
-		
+		final Reviews reviewsBefore = totalkService.getByEntity(EntityType.ADV, testAdvId, ReviewType.OPINION, 0, 100);
+				
 		Review review = new Review();
-		review.setEntityId("18fd7de2-4de8-4dbb-8eed-a03d4067a84d");
+		review.setEntityId(testAdvId);
+		review.setEntityType(EntityType.ADV);
 		review.setTitle("title1");
 		review.setBody("boidy1");
 		review.setType(ReviewType.OPINION);
 		
 		review = totalkService.addReview(review);
 		log.info("review:{}", review);
+		assertThat(review.getId(), Matchers.notNullValue());
 		
-		List<Review> reviews = totalkService.getByEntity(EntityType.ADV, review.getEntityId(), ReviewType.OPINION, 0, 10);
-		log.info("reviews size:{}", reviews.size());
-		log.info("getByEntity:{}", reviews);
+		Review review2  = totalkService.getReviewById(review.getId());
+		assertThat(review2, Matchers.equalTo(review));
 		
-		log.info("getReviewById:{}", totalkService.getReviewById(review.getId()));
+		Thread.sleep(1000);// ES index
+		
+		final Reviews reviewsAfter = totalkService.getByEntity(EntityType.ADV, review.getEntityId(), ReviewType.OPINION, 0, 100);
+		assertThat(reviewsAfter.getTotal(), Matchers.equalTo(reviewsBefore.getTotal() +1));
+		assertThat(Collections2.transform(reviewsAfter.getReviews(), Review::getId), Matchers.hasItems(review.getId()));
+	}
+	
+	@Test
+	public void testAddComment() throws WrappedException, NoAdvException, DeletedException, TException, InterruptedException{
+
+		Review review = new Review();
+		review.setEntityId(testAdvId);
+		review.setEntityType(EntityType.ADV);
+		review.setTitle("title1");
+		review.setBody("boidy1");
+		review.setType(ReviewType.OPINION);
+		
+		review = totalkService.addReview(review);
+		
+		final Comments beforeAdd = totalkService.getComments(review.getId(), 0, 100);
+		
+		Comment comment = new Comment();
+		comment.setReviewId(review.getId());
+		comment.setBody("asdaqweqwe");
+		comment = totalkService.addComment(comment);
+		assertThat(comment.getId(), Matchers.notNullValue());
+		assertThat(comment.getBody(), Matchers.notNullValue());
+		assertThat(comment.getReviewId(), Matchers.equalTo(review.getId()));
+		
+		Comment comment2  = totalkService.getCommentById(comment.getId());
+		assertThat(comment2, Matchers.equalTo(comment));
+		
+		Thread.sleep(1000);// ES index
+		final Comments afterAdd = totalkService.getComments(review.getId(), 0, 100);
+		assertThat(afterAdd.getTotal(), Matchers.equalTo(beforeAdd.getTotal() +1));
+		assertThat(Collections2.transform(afterAdd.getComments(), Comment::getId), Matchers.hasItems(comment.getId()));
+
 	}
 	
 }

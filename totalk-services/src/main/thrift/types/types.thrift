@@ -23,7 +23,16 @@ struct Comment {
 	4:i64 deletedAt
 	
 	5:string creatorId			//UUID
-	6:string createdAt
+	6:i64 createdAt
+	7:i64 updatedAt
+	8:string body
+}
+
+struct Comments {
+	1:i32 total
+	2:i32 limit
+	3:i32 offset
+	4:list<Comment> comments
 } 
 
 struct Review {
@@ -50,8 +59,15 @@ struct Review {
 	16:i32 votesYes				//Полезно ДА
 	17:i32 votesNo				//Полезно НЕТ
 	
-	18:list<Comment> comments	//Первая страница комментариев
+	18:Comments comments	//Первая страница комментариев
 	19:i32 reviewsCount			//сколько всего отзывов об этом товаре
-	20:bool myVote		//"Полезно", поставленный текущим пользователем
-	
+	20:bool myVote		//"Полезно", поставленный текущим пользователем	
 }
+
+struct Reviews {
+	1:i32 total
+	2:i32 limit
+	3:i32 offset
+	4:list<Review> reviews
+} 
+

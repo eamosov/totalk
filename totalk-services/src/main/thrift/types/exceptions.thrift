@@ -5,7 +5,15 @@ exception NoReviewException{
 	1:string id
 }
 
+exception NoCommentException{
+	1:string id
+} 
+
 exception NoAdvException {
+	1:string id
+}
+
+exception DeletedException {
 	1:string id
 }
 

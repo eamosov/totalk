@@ -14,17 +14,23 @@ import com.tobox.totalk.models.EsService;
 import com.tobox.totalk.models.review.ReviewModel;
 import com.tobox.totalk.thrift.TotalkService;
 import com.tobox.totalk.thrift.TotalkService.getByEntity_args;
+import com.tobox.totalk.thrift.types.Reviews;
 
 @RpcHttp
 @RpcWebsocket
-public class GetByEntityController extends AppThriftController<TotalkService.getByEntity_args, List<ReviewModel>> {
+public class GetByEntityController extends AppThriftController<TotalkService.getByEntity_args, Reviews> {
 
 	@Autowired
 	private EsService esService;
 	
 	@Override
-	protected List<ReviewModel> processRequest() throws TException {		
-		return waitForAnswer(Futures.transformAsync(esService.findReviewsByEntity(args.getEntityId(), args.getEntityType(), args.getReviewType(), args.getLimit(), args.getOffset()), ESearchResult::loadEntitiesAsync));		
+	protected Reviews processRequest() throws TException {
+		
+		//TODO проверить лимит/оффсет		
+				
+		return waitForAnswer(Futures.transform(Futures.transformAsync(esService.findReviewsByEntity(args.getEntityId(), args.getEntityType(), args.getReviewType(), args.getLimit(), args.getOffset()), r-> r.loadEntitiesAsync()), (ESearchResult<ReviewModel> sr) -> {
+			return new Reviews(sr.total, args.getLimit(), args.getOffset(), (List)sr.loaded);
+		}));		
 	}
 
 	@Override

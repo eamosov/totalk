@@ -1,0 +1,23 @@
+{
+    "comments" : {
+        "dynamic_templates": [
+            {
+                "default_not_analyzed": {
+                    "match" : "*",
+                    "match_mapping_type" : "string",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                    }
+                }
+            }
+        ],
+        "_parent": {
+        	"type": "reviews" 
+		},    
+    	"_all" : {"enabled" : false},
+        "properties" : {
+   
+        }
+    }
+}

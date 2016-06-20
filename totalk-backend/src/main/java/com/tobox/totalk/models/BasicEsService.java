@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
@@ -47,7 +48,8 @@ public class BasicEsService {
 		public final List<SearchHit> hits;
 		public final List<SearchHit> innerHits;
 		public final SearchResponse response;
-		private EsProviderIF<ENTITY> factory;
+		private final EsProviderIF<ENTITY> factory;
+		public final List<ENTITY> loaded;
 		
 		ESearchResult(EsProviderIF<ENTITY> factory, SearchResponse response, int total, List<SearchHit> hits, List<SearchHit> innerHits, List<ENTITY> sources) {
 			super();
@@ -57,6 +59,17 @@ public class BasicEsService {
 			this.sources = sources;
 			this.response = response;
 			this.factory = factory;
+			this.loaded =  null;
+		}
+		
+		ESearchResult(ESearchResult<ENTITY> other, List<ENTITY> loaded){
+			this.total = other.total;
+			this.hits = other.hits;
+			this.innerHits = other.innerHits;
+			this.sources = other.sources;
+			this.response = other.response;
+			this.factory = other.factory;
+			this.loaded =  loaded;			
 		}
 		
 		public static <ENTITY extends EsIndexableIF> ESearchResult<ENTITY> empty(EsProviderIF<ENTITY> factory){
@@ -70,14 +83,17 @@ public class BasicEsService {
 		public List<ENTITY> loadEntities(){
 			return factory.findEntityByIdsInOrder(getIds());			
 		}
-		
+				
 		@SuppressWarnings("unchecked")
-		public ListenableFuture<List<ENTITY>> loadEntitiesAsync(){
+		public ListenableFuture<ESearchResult<ENTITY>> loadEntitiesAsync(){
 			if (!(factory instanceof AsyncRoModelFactoryIF))
 				throw new NotImplementedException("Factory " + factory.getClass().getCanonicalName() + " must implement AsyncRoModelFactoryIF");
 			
-			return ((AsyncRoModelFactoryIF<String, ENTITY>)factory).findEntityByIdsInOrderAsync(getIds());
+			return Futures.transform(((AsyncRoModelFactoryIF<String, ENTITY>)factory).findEntityByIdsInOrderAsync(getIds()), (List<ENTITY> loaded) -> 
+				new ESearchResult<ENTITY>(ESearchResult.this, loaded)
+			);			
 		}
+		
 	}
 
 	public <PK, ENTITY extends EsIndexableIF> ESearchResult<ENTITY> searchQuery(EsProviderIF<ENTITY> factory, SearchType searchType, boolean scroll, String query) throws ElasticsearchException {
