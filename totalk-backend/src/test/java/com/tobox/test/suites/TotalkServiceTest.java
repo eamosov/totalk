@@ -50,7 +50,10 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 	private String backendHost = "localhost";
 	private int backendPort = 8080;
 	private String testAdvId = "18fd7de2-4de8-4dbb-8eed-a03d4067a84d";
-	
+
+	private String totalkHost = "localhost";
+	private int totalkPort = 11000;
+
 	private UserIdResponse user;
 	
 	@BeforeClass
@@ -60,7 +63,7 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 		httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		restTemplate = new RestTemplate(httpRequestFactory);
 		
-		final THttpClient tr = new THttpClient("http://localhost:11000/TBINARY", httpClient);
+		final THttpClient tr = new THttpClient("http://" + totalkHost + ":" + totalkPort + "/TBINARY", httpClient);
 		totalkService = new TotalkService.Client(new TBinaryProtocol(tr));
 		
 		

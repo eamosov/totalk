@@ -29,9 +29,11 @@
     
     <bean id="advDAO" class="com.tobox.services.dao.AdvDAO" />
 
+<!-- 
     <util:properties id="esProperties" location="classpath:es.properties"/>        
     <elasticsearch:node id="esNode" properties="esProperties" />
            
     <elasticsearch:client id="esClient" node="esNode" />
-  	     	   
+ -->
+   	     	   
 </beans>

@@ -10,6 +10,11 @@ import java.util.Vector;
 
 import javax.management.MBeanServer;
 
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.everthrift.appserver.AppserverApplication;
 import org.everthrift.cassandra.DbMetadataParser;
 import org.everthrift.cassandra.codecs.ByteArrayBlobCodec;
@@ -21,6 +26,7 @@ import org.everthrift.utils.logging.ColorOnConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -82,6 +88,17 @@ public class TotalkApplication {
     	return mm;
     }
     
+    @Bean
+    public Client esClient(
+    		@Value("${tobox.search.cluster.name}") String clusterName,
+    		@Value("${tobox.search.transport.address}") String transportAddress,
+    		@Value("${tobox.search.transport.port}") String transortPort) {
+    	
+        final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
+        
+        return new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(transportAddress, Integer.parseInt(transortPort)));
+    }    
+    
 	private static void initEhCacheMbeans(){
 		final CacheManager manager = AppserverApplication.INSTANCE.context.getBean(CacheManager.class);
 		final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -139,7 +156,7 @@ public class TotalkApplication {
 
 		AppserverApplication.INSTANCE.start();
 
-        AppserverApplication.INSTANCE.waitExit();
+        //AppserverApplication.INSTANCE.waitExit();
     }
 
 
