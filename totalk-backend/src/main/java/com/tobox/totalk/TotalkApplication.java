@@ -155,8 +155,6 @@ public class TotalkApplication {
 		initEhCacheMbeans();		
 
 		AppserverApplication.INSTANCE.start();
-
-        //AppserverApplication.INSTANCE.waitExit();
     }
 
 
