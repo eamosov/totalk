@@ -38,7 +38,10 @@ public class EtcdExport implements SmartLifecycle{
 	private String etcdKey;	
 
 	@Value("${etcd.key.ttl:60}")
-	private String etcdKeyTtl;	
+	private String etcdKeyTtl;
+	
+	@Value("${docker.host.ip}")
+	private String hostIp;
 	
 	private volatile boolean isRunning = false;
 	
@@ -77,7 +80,7 @@ public class EtcdExport implements SmartLifecycle{
 		
 		if (jettyServer !=null){
 			try {
-				client.put(etcdKey + "/http", jettyServer.getJettyHost() + ":" + jettyServer.getJettyPort()).ttl(Integer.parseInt(etcdKeyTtl)).timeout(1, TimeUnit.SECONDS).send().addListener( resp -> {
+				client.put(etcdKey + "/http", hostIp + ":" + jettyServer.getJettyPort()).ttl(Integer.parseInt(etcdKeyTtl)).timeout(1, TimeUnit.SECONDS).send().addListener( resp -> {
 					try {
 						resp.get();
 					} catch (Exception e) {
