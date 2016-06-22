@@ -1,16 +1,20 @@
 package com.tobox.totalk.controllers;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.controller.ThriftController;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
 import org.everthrift.clustering.MessageWrapper;
+import org.everthrift.utils.ClassUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -105,5 +109,38 @@ public abstract class AppThriftController<ArgsType extends TBase, ResultType> ex
 	
 	protected Cookie[] getHttpCookies(){
 		return (Cookie[])tps.getAttributes().get(MessageWrapper.HTTP_COOKIES);
-	}	
+	}
+	
+	protected void checkLimitOffset(int maxLimit, int maxOffset) throws TApplicationException{
+		
+		final Map<String, PropertyDescriptor> entityProps = ClassUtils.getPropertyDescriptors(args.getClass());
+		final PropertyDescriptor limitProp = entityProps.get("limit");
+		final PropertyDescriptor offsetProp = entityProps.get("offset");
+		
+		if (limitProp == null)
+			throw new TApplicationException("unknown arg 'limit'");
+		
+		final Integer limit;
+		try {
+			limit = (Integer)limitProp.getReadMethod().invoke(args);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new TApplicationException("unknown arg 'limit'");
+		}
+		
+		if (limit == null || limit <=0 || limit > maxLimit)
+			throw new TApplicationException("anvalid limit, must be (0, " + maxLimit + "]");
+		
+		if (offsetProp == null)
+			throw new TApplicationException("unknown arg 'offset'");
+				
+		final Integer offset;
+		try {
+			offset = (Integer)offsetProp.getReadMethod().invoke(args);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new TApplicationException("unknown arg 'offset'");
+		}
+		
+		if (offset == null || offset <0 || offset > maxOffset)
+			throw new TApplicationException("anvalid offset, must be [0, " + maxOffset + "]");
+	}
 }

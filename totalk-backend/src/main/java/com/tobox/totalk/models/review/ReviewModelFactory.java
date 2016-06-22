@@ -27,7 +27,7 @@ public class ReviewModelFactory extends OptLockCassandraModelFactory<String, Rev
 
 	@Override
 	public String getIndexName() {
-		return "reviews";
+		return "reviews_index";
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import com.datastax.driver.core.Session;
 import com.tobox.services.config.CassandraConfig;
 
 import ch.qos.logback.classic.PatternLayout;
+import fr.pilato.spring.elasticsearch.ElasticsearchAbstractClientFactoryBean;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
@@ -92,11 +93,22 @@ public class TotalkApplication {
     public Client esClient(
     		@Value("${tobox.search.cluster.name}") String clusterName,
     		@Value("${tobox.search.transport.address}") String transportAddress,
-    		@Value("${tobox.search.transport.port}") String transortPort) {
+    		@Value("${tobox.search.transport.port}") String transortPort) throws Exception {
     	
         final Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", clusterName).build();
         
-        return new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(transportAddress, Integer.parseInt(transortPort)));
+        final Client _client = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(transportAddress, Integer.parseInt(transortPort)));
+                
+        final ElasticsearchAbstractClientFactoryBean esHelper = new ElasticsearchAbstractClientFactoryBean(){
+
+			@Override
+			protected Client buildClient() throws Exception {
+				return _client;
+			}};
+			
+		esHelper.afterPropertiesSet();
+		
+        return _client;
     }    
     
 	private static void initEhCacheMbeans(){

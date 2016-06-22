@@ -1,0 +1,64 @@
+{
+    "reviews" : {
+        "dynamic_templates": [
+            {
+                "default_not_analyzed": {
+                    "match" : "*",
+                    "match_mapping_type" : "string",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                    }
+                }
+            }
+        ],    
+    	"_all" : {"enabled" : false},
+        "properties" : {
+            "body" : {
+                "type" : "string",
+                "index" : "no"
+            },
+            "categoryId" : {
+                "type" : "long"
+            },
+            "commentsAllowed" : {
+                "type" : "boolean",
+                "index" : "no"
+            },
+            "country" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+            },
+            "createdAt" : {
+            	"type":   "long"
+            },
+            "creatorId" : {
+                "type" : "string",
+                "index" : "no"
+            },
+            "entityId" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+            },
+            "entityType" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+            },
+            "id" : {
+                "type" : "string",
+                "index" : "no"
+            },
+            "title" : {
+                "type" : "string",
+                "index" : "no"
+            },
+            "type" : {
+                "type" : "string",
+                "index" : "not_analyzed"
+            },
+            "updatedAt" : {
+            	"type":   "long"
+            }
+        }
+    }
+}

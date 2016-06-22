@@ -2,6 +2,7 @@ package com.tobox.totalk.controllers.totalk;
 
 import java.util.Optional;
 
+import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
@@ -26,6 +27,9 @@ public class GetCommentByIdController extends AppThriftController<TotalkService.
 
 	@Override
 	protected Comment processRequest() throws TException {
+		
+		if (args.getId() == null)
+			throw new TApplicationException("invalid arguments: id");
 		
 		final CommentModel comment = Optional.ofNullable(commentModelFactory.findEntityById(args.getId())).orElseThrow(() -> new NoCommentException(args.getId()));
 		
