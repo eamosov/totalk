@@ -49,7 +49,7 @@ public class GetEntityByIdController extends AppThriftController<TotalkService.g
 
 	@Override
 	public void setup(getEntityById_args args) {
-		
+		this.isSecured = false;
 	}
 
 }
