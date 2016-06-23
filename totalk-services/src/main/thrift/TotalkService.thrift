@@ -8,6 +8,11 @@ include "types/exceptions.thrift"
 service TotalkService {
 
 	/**
+	*	Получить ToTalk информацию о товаре entityId
+	*/
+	types.TotalkEntity getEntityById(1:string id)  throws (1:exceptions.WrappedException wrappedException);
+
+	/**
 	*	Получить отзыв по id
 	*/		
 	types.Review getReviewById(1:string id) throws (1:exceptions.WrappedException wrappedException, 2:exceptions.NoReviewException noReviewException, 3:exceptions.DeletedException deletedException);
@@ -35,7 +40,7 @@ service TotalkService {
 	/**
 	*	Получить список отзывов о товаре
 	*/
-	types.Reviews getByEntity(1:types.EntityType entityType, 2:string entityId, 3:types.ReviewType reviewType, 4:i32 offset, 5:i32 limit) throws (1:exceptions.WrappedException wrappedException);
+	types.Reviews getByEntity(1:string entityId, 2:types.ReviewType reviewType, 3:i32 offset, 4:i32 limit) throws (1:exceptions.WrappedException wrappedException);
 	
 	/**
 	*	Отзыв полезный: ДА/НЕТ ?

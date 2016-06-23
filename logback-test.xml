@@ -23,12 +23,7 @@
 	</root>
 
 	<logger name="org.jgroups" level="INFO" />
-	<logger name="com.knockchat.sql" level="INFO"/>
 	<logger name="org.apache.thrift.server" level="INFO"/>
-	<logger name="com.knockchat.appserver.controller.ThriftProcessor" level="INFO"/>
-	<logger name="com.knockchat.appserver.model.LazyLoadManager" level="INFO"/>
-	<logger name="com.knockchat.appserver.cluster.JgroupsMessageDispatcher" level="DEBUG"/>
-	<logger name="com.knockchat.appserver.transport" level="INFO"/>
 
 	
 	<logger name="org.hibernate" level="INFO"/>
@@ -40,33 +35,15 @@
 	<logger name="jdbc.resultsettable" level="OFF" />
 
 
-	<logger name="com.knockchat.node.model.es.EsService" level="TRACE" />
-	<logger name="com.knockchat.appserver.transport.jgroups" level="INFO" />
-	<logger name="com.knockchat.node.controllers" level="INFO" />
-	<logger name="com.knockchat.utils.ThriftContext" level="INFO" />
-	<logger name="com.knockchat.appserver.transport" level="INFO" />
-
-
 	<logger name="controller" level="DEBUG" />
-	<logger name="com.knockchat.node.controllers.clients.account.OnWebsocketOpen" level="DEBUG" />
-	<logger name="com.knockchat.appserver.model.lazy.LazyLoadManager" level="INFO" />
-	<logger name="com.knockchat.utils.thrift.ThriftTraversal" level="INFO" />
 	<logger name="net.sf.ehcache" level="INFO" />
 	<logger name="net.sf.ehcache.pool.sizeof" level="INFO" />
-	<logger name="com.knockchat.appserver.transport.jgroups.JGroupsThriftAdapter" level="INFO"/>
-	<logger name="com.knockchat.node.model.analytics.AnalyticsService" level="INFO"/>
 
 	<logger name="com.datastax.driver" level="INFO" />
 	<logger name="com.datastax.driver.core.QueryLogger.NORMAL" level="TRACE" />
 	<logger name="com.datastax.driver.core.QueryLogger.SLOW" level="TRACE" />
 	<logger name="com.datastax.driver.core.QueryLogger.ERROR" level="TRACE" />
 
-	<logger name="com.knockchat.node.model.account.VladBot" level="DEBUG" />
-	<logger name="com.knockchat.utils.thrift.scanner.TBaseScannerFactory" level="DEBUG" />
 	<logger name="cassandra-query-log" level="DEBUG" />
-	<logger name="com.knockchat.node.utils.geocode"  level="DEBUG" />
-	<logger name="com.knockchat.node.model.account.devices" level="DEBUG" />
-	<logger name="com.knockchat.node.model.account.AccountModel" level="DEBUG" />
-	<logger name="com.knockchat.appserver.cluster" level="INFO" />
 
 </configuration>

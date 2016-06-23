@@ -2,7 +2,6 @@ package com.tobox.totalk.controllers.totalk;
 
 import java.util.UUID;
 
-import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.model.OptResult;
 import org.everthrift.appserver.transport.http.RpcHttp;
@@ -32,11 +31,11 @@ public class AddCommentController extends AppThriftController<TotalkService.addC
 
 	@Override
 	protected Comment processRequest() throws TException {
-		
-		final Comment _comment = args.getComment();
-		if (_comment == null)
-			throw new TApplicationException("invalid arguments");
-		
+
+		assertNotNull(addComment_args._Fields.COMMENT);
+		assertNotNullUuid("comment.reviewId", args.getComment().getReviewId());
+
+		final Comment _comment = args.getComment();		
 		final ReviewModel review = reviewModelFactory.findEntityById(_comment.getReviewId());
 		
 		if (review == null)

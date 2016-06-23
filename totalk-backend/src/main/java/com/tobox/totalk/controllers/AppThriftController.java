@@ -4,12 +4,14 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
+import org.apache.thrift.TFieldIdEnum;
 import org.everthrift.appserver.controller.ThriftController;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
@@ -143,4 +145,32 @@ public abstract class AppThriftController<ArgsType extends TBase, ResultType> ex
 		if (offset == null || offset <0 || offset > maxOffset)
 			throw new TApplicationException("anvalid offset, must be [0, " + maxOffset + "]");
 	}
+	
+	protected void assertNotNullUuid(String name, Object value) throws TApplicationException{
+		if (value == null)
+			throw new TApplicationException("invalid arguments: " + name + " must be not null");
+		
+		if (!(value instanceof String))
+			throw new TApplicationException("invalid arguments: " + name + " must be UUID(String)");
+		
+		try{
+			UUID.fromString((String)value);
+		}catch(Exception e){
+			throw new TApplicationException("invalid arguments: " + name + " must be UUID(String)");
+		}		
+	}
+	
+	protected void assertNotNullUuid(TFieldIdEnum id) throws TApplicationException{
+		assertNotNullUuid(id.getFieldName(), args.getFieldValue(id));
+	}
+	
+	protected void assertNotNull(String name, Object value) throws TApplicationException{
+		if (value == null)
+			throw new TApplicationException("invalid arguments: " + name + " must be not null");		
+	}
+	
+	protected void assertNotNull(TFieldIdEnum id) throws TApplicationException{
+		assertNotNull(id.getFieldName(), args.getFieldValue(id));
+	}
+	
 }

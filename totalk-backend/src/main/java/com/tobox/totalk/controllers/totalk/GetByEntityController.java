@@ -2,7 +2,6 @@ package com.tobox.totalk.controllers.totalk;
 
 import java.util.List;
 
-import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
@@ -15,7 +14,6 @@ import com.tobox.totalk.models.EsService;
 import com.tobox.totalk.models.review.ReviewModel;
 import com.tobox.totalk.thrift.TotalkService;
 import com.tobox.totalk.thrift.TotalkService.getByEntity_args;
-import com.tobox.totalk.thrift.types.EntityType;
 import com.tobox.totalk.thrift.types.Reviews;
 
 @RpcHttp
@@ -28,18 +26,12 @@ public class GetByEntityController extends AppThriftController<TotalkService.get
 	@Override
 	protected Reviews processRequest() throws TException {
 		
-		if (args.getEntityId() == null)
-			throw new TApplicationException("invalid arguments: entityId");
-		
-		if (args.getEntityType() == null)
-			args.setEntityType(EntityType.ADV);		
-
-		if (args.getReviewType() == null)
-			throw new TApplicationException("invalid arguments: reviewType");		
+		assertNotNullUuid(getByEntity_args._Fields.ENTITY_ID);
+		assertNotNull(getByEntity_args._Fields.REVIEW_TYPE);
 
 		checkLimitOffset(100, 5000);		
 				
-		return waitForAnswer(Futures.transform(Futures.transformAsync(esService.findReviewsByEntity(args.getEntityId(), args.getEntityType(), args.getReviewType(), args.getLimit(), args.getOffset()), r-> r.loadEntitiesAsync()), (ESearchResult<ReviewModel> sr) -> {
+		return waitForAnswer(Futures.transform(Futures.transformAsync(esService.findReviewsByEntity(args.getEntityId(), args.getReviewType(), args.getLimit(), args.getOffset()), r-> r.loadEntitiesAsync()), (ESearchResult<ReviewModel> sr) -> {
 			return new Reviews(sr.total, args.getLimit(), args.getOffset(), (List)sr.loaded);
 		}));		
 	}

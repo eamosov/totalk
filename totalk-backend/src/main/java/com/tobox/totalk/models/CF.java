@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.tobox.totalk.models.beansec.Security;
+import com.tobox.totalk.models.review.ReviewModelFactory;
 
 import net.sf.ehcache.CacheManager;
 
@@ -72,6 +73,9 @@ public class CF {
   
   @Autowired
   public ClusterThriftClientIF multicastThriftTransport;
+  
+  @Autowired
+  public ReviewModelFactory reviews;
   
   public static Statements autoCommit(){
 	  return i().cassandraFactories.begin().setAutoCommit(true).setBatch(false);

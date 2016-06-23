@@ -40,10 +40,6 @@
                 "type" : "string",
                 "index" : "not_analyzed"
             },
-            "entityType" : {
-                "type" : "string",
-                "index" : "not_analyzed"
-            },
             "id" : {
                 "type" : "string",
                 "index" : "no"

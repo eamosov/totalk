@@ -30,10 +30,10 @@ import com.tobox.totalk.thrift.exceptions.NoAdvException;
 import com.tobox.totalk.thrift.exceptions.WrappedException;
 import com.tobox.totalk.thrift.types.Comment;
 import com.tobox.totalk.thrift.types.Comments;
-import com.tobox.totalk.thrift.types.EntityType;
 import com.tobox.totalk.thrift.types.Review;
 import com.tobox.totalk.thrift.types.ReviewType;
 import com.tobox.totalk.thrift.types.Reviews;
+import com.tobox.totalk.thrift.types.TotalkEntity;
 
 @ContextConfiguration(classes = TestApplication.class)
 public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
@@ -85,11 +85,10 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 	@Test
 	public void testAddReview() throws WrappedException, TException, InterruptedException{
 		
-		final Reviews reviewsBefore = totalkService.getByEntity(EntityType.ADV, testAdvId, ReviewType.OPINION, 0, 100);
+		final Reviews reviewsBefore = totalkService.getByEntity(testAdvId, ReviewType.OPINION, 0, 100);
 				
 		Review review = new Review();
 		review.setEntityId(testAdvId);
-		review.setEntityType(EntityType.ADV);
 		review.setTitle("title1");
 		review.setBody("boidy1");
 		review.setType(ReviewType.OPINION);
@@ -101,11 +100,16 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 		Review review2  = totalkService.getReviewById(review.getId());
 		assertThat(review2, Matchers.equalTo(review));
 		
-		Thread.sleep(1000);// ES index
+		Thread.sleep(1500);// ES index
 		
-		final Reviews reviewsAfter = totalkService.getByEntity(EntityType.ADV, review.getEntityId(), ReviewType.OPINION, 0, 100);
+		final Reviews reviewsAfter = totalkService.getByEntity(review.getEntityId(), ReviewType.OPINION, 0, 100);
 		assertThat(reviewsAfter.getTotal(), Matchers.equalTo(reviewsBefore.getTotal() +1));
 		assertThat(Collections2.transform(reviewsAfter.getReviews(), Review::getId), Matchers.hasItems(review.getId()));
+		
+		
+		final TotalkEntity te = totalkService.getEntityById(testAdvId);
+		assertThat(te.getId(), Matchers.equalTo(testAdvId));
+		assertThat(te.getOpinions().getTotal(), Matchers.equalTo(reviewsAfter.getTotal()));
 	}
 	
 	@Test
@@ -113,12 +117,13 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 
 		Review review = new Review();
 		review.setEntityId(testAdvId);
-		review.setEntityType(EntityType.ADV);
 		review.setTitle("title1");
 		review.setBody("boidy1");
 		review.setType(ReviewType.OPINION);
 		
 		review = totalkService.addReview(review);
+		
+		assertThat(review.getComments(), Matchers.equalTo(new Comments(0,0,0,null)));
 		
 		final Comments beforeAdd = totalkService.getComments(review.getId(), 0, 100);
 		
@@ -133,11 +138,17 @@ public class TotalkServiceTest extends AbstractTestNGSpringContextTests {
 		Comment comment2  = totalkService.getCommentById(comment.getId());
 		assertThat(comment2, Matchers.equalTo(comment));
 		
-		Thread.sleep(1000);// ES index
+		Thread.sleep(1500);// ES index
 		final Comments afterAdd = totalkService.getComments(review.getId(), 0, 100);
 		assertThat(afterAdd.getTotal(), Matchers.equalTo(beforeAdd.getTotal() +1));
 		assertThat(Collections2.transform(afterAdd.getComments(), Comment::getId), Matchers.hasItems(comment.getId()));
-
+		
+		review = totalkService.getReviewById(review.getId());
+		assertThat(review.getComments(), Matchers.equalTo(new Comments(1,0,0,null)));
+		
+		for (Review r : totalkService.getByEntity(testAdvId, ReviewType.OPINION, 0, 10).getReviews()){
+			assertThat(review.getComments(), Matchers.notNullValue());	
+		}
 	}
 	
 }

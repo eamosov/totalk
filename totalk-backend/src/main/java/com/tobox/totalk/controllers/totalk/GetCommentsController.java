@@ -2,7 +2,6 @@ package com.tobox.totalk.controllers.totalk;
 
 import java.util.List;
 
-import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
@@ -27,9 +26,7 @@ public class GetCommentsController extends AppThriftController<TotalkService.get
 	@Override
 	protected Comments processRequest() throws TException {
 
-		if (args.getReviewId() == null)
-			throw new TApplicationException("invalid arguments: reviewId");
-
+		assertNotNullUuid(getComments_args._Fields.REVIEW_ID);
 		checkLimitOffset(100, 5000);
 		
 		return waitForAnswer(Futures.transform(Futures.transformAsync(esService.findCommentsByReview(args.getReviewId(), args.getLimit(), args.getOffset()), r-> r.loadEntitiesAsync()), (ESearchResult<CommentModel> sr) -> {

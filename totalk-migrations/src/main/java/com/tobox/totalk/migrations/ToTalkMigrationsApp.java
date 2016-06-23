@@ -40,10 +40,10 @@ public class ToTalkMigrationsApp {
 	@Value("${cassandra.keyspace}")
 	private String keyspace;
 
-	@Value("${cassandra.login}")
+	@Value("${cassandra.migrator.login}")
 	private String login;
 
-	@Value("${cassandra.password}")
+	@Value("${cassandra.migrator.password}")
 	private String password;
 		
 	@Value("${cassandra.migrations.basePackage}")

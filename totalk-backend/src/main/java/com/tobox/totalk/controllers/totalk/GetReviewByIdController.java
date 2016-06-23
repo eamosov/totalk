@@ -2,7 +2,6 @@ package com.tobox.totalk.controllers.totalk;
 
 import java.util.Optional;
 
-import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.everthrift.appserver.transport.http.RpcHttp;
 import org.everthrift.appserver.transport.websocket.RpcWebsocket;
@@ -27,9 +26,7 @@ public class GetReviewByIdController extends AppThriftController<TotalkService.g
 	@Override
 	protected Review processRequest() throws TException {
 		
-		if (args.getId() == null)
-			throw new TApplicationException("invalid arguments: id");
-
+		assertNotNullUuid(getReviewById_args._Fields.ID);
 		final ReviewModel review = Optional.ofNullable(reviewModelFactory.findEntityById(args.getId())).orElseThrow(() -> new NoReviewException(args.getId()));
 		
 		if (review.isDeleted())

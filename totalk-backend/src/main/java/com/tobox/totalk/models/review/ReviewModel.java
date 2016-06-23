@@ -5,8 +5,11 @@ import java.io.Serializable;
 import org.everthrift.appserver.model.CreatedAtIF;
 import org.everthrift.appserver.model.DaoEntityIF;
 import org.everthrift.appserver.model.UpdatedAtIF;
+import org.everthrift.appserver.model.lazy.LazyMethod;
+import org.everthrift.appserver.model.lazy.Registry;
 import org.everthrift.cassandra.com.datastax.driver.mapping.annotations.Table;
 
+import com.tobox.totalk.models.CF;
 import com.tobox.totalk.models.EsIndexableIF;
 import com.tobox.totalk.thrift.types.Review;
 
@@ -39,4 +42,8 @@ public class ReviewModel extends Review implements DaoEntityIF, CreatedAtIF, Upd
 		return getUpdatedAt();
 	}
 
+ 	@LazyMethod
+	public void loadComments(Registry r){
+ 		r.add(CF.i().reviews.commentsCountLoader, this);	   
+	}
 }

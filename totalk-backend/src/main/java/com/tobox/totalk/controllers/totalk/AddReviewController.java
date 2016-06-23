@@ -19,7 +19,6 @@ import com.tobox.totalk.thrift.TotalkService.addReview_args;
 import com.tobox.totalk.thrift.exceptions.DeletedException;
 import com.tobox.totalk.thrift.exceptions.NoAdvException;
 import com.tobox.totalk.thrift.types.Country;
-import com.tobox.totalk.thrift.types.EntityType;
 import com.tobox.totalk.thrift.types.Review;
 
 @RpcHttp
@@ -36,16 +35,12 @@ public class AddReviewController extends AppThriftController<TotalkService.addRe
 	protected Review processRequest() throws TException {
 		
 		//TODO  проверить, что пользователь не анонимус
-		
-		final Review _review = args.getReview();
-		if (_review == null)
-			throw new TApplicationException("invalid arguments");
-		
+
+		assertNotNull(addReview_args._Fields.REVIEW);
+		assertNotNullUuid("review.entityId", args.getReview().getEntityId());
+
+		final Review _review = args.getReview();		
 		final ReviewModel review = new ReviewModel();
-		review.setEntityType(EntityType.ADV);
-		
-		if (_review.getEntityId() == null)
-			throw new TApplicationException("invalid arguments: review.entityId");
 		
 		final Adv adv = advDAO.findById(UUID.fromString(_review.getEntityId()));
 		

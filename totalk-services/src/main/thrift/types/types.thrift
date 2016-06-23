@@ -7,13 +7,16 @@ enum ReviewType {
 	REVIEW
 }
 
-enum EntityType {
-	ADV
-}
-
 enum Country {
     RU,
     CN
+}
+
+struct TotalkEntity {
+	1:string id			//UUID товара	
+		
+	2:Reviews reviews	//только Reviews.total 
+	3:Reviews opinions	//только Reviews.total
 }
 
 struct Comment {
@@ -41,7 +44,6 @@ struct Review {
 	3:bool deleted
 	4:i64 deletedAt
 	
-	5:EntityType entityType
 	6:string entityId			//UUID товара
 	7:i32 categoryId			//Категоря товара  ( Нужно учеть, что категория может быть изменена)
 	8:Country country			//Страна товара
@@ -59,9 +61,8 @@ struct Review {
 	16:i32 votesYes				//Полезно ДА
 	17:i32 votesNo				//Полезно НЕТ
 	
-	18:Comments comments	//Первая страница комментариев
-	19:i32 reviewsCount			//сколько всего отзывов об этом товаре
-	20:bool myVote		//"Полезно", поставленный текущим пользователем	
+	18:Comments comments	//только Comments.total
+	20:bool myVote			//"Полезно", поставленный текущим пользователем	
 }
 
 struct Reviews {
